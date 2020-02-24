@@ -1,15 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import Home from './Components/Home/Home.component';
+import Routes from './Components/Layout/routes';
+import Layout from './Components/Layout'
+import { BrowserRouter as Router, } from 'react-router-dom';
 
 function App() {
   return (
     <Router>
-       <Switch>
-            <Route exact path='/' component={Home} />
-        </Switch>
+      <Layout>
+        <Routes />
+      </Layout>
     </Router>
+
   );
 }
 
