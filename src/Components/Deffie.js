@@ -53,9 +53,9 @@ export default () => {
     }
     return (
         <>
-            <div className="container h-100 mt-5">
-                <div className="w-75 w-sm-100 m-auto">
-                    <form className="p-5">
+            <div className="w-75 m-auto h-100 mt-5">
+                <div className="">
+                    <form className="p-sm-5">
                         <h1 className="text-center">Diffie Hellman Exchange Key</h1>
                         <div className="lead">Given a large prime p=65537, a primary root g=3</div>
 
@@ -76,7 +76,8 @@ export default () => {
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">X =</span>
                                 </div>
-                                <input type="number" class="form-control" placeholder="X" value={state.X} />
+                                <input type="number" class="form-control" placeholder="X" value={state.X} 
+                                disabled={true}/>
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-primary" type="button" onClick={calculateX}>Compute</button>
                                 </div>
@@ -101,7 +102,7 @@ export default () => {
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Y =</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Y" value={state.Y} />
+                                <input type="text" disabled class="form-control" placeholder="Y" value={state.Y} />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-primary" type="button" onClick={calculateY}>Compute</button>
                                 </div>
