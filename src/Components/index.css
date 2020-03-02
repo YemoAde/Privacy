@@ -1,0 +1,23 @@
+a,
+a:active {
+  text-decoration: none;
+}
+
+.pageheader {
+  background: white;
+  margin-top: 1rem;
+}
+
+.align-center {
+  background: white;
+  padding: 2rem;
+  width: 70%;
+  margin: 1rem auto;
+}
+
+input:active,
+input:hover,
+input:focus,
+.form-control {
+  outline: none !important;
+}
