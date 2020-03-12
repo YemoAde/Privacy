@@ -4,6 +4,7 @@ import Home from '../Home/Home.component';
 import RSA from '../RSA';
 import Elgamal from '../Elgamal';
 import Deffie from '../Deffie';
+import RElgamal from '../RElgamal';
 
 
 export default () => {
@@ -13,6 +14,7 @@ export default () => {
             <Route exact path='/rsa' component={RSA} />
             <Route exact path='/elgamal' component={Elgamal} />
             <Route exact path='/diffie' component={Deffie} />
+            <Route exact path='/relgamal' component={RElgamal} />
         </Switch>
     )
 }
