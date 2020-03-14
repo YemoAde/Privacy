@@ -1,53 +1,39 @@
 import React, { useState } from 'react';
-
+import { Route, Switch, Link } from 'react-router-dom';
+import RSA from '.';
+import Elgamal from './Elgamal';
+import Deffie from './Deffie';
+import RElgamal from './RElgamal';
+import Universal from './Universal';
 
 export default () => {
-    const [view, setView] = useState()
-  return (
-    <div id="accordion">
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Collapsible Group Item #1
-        </button>
-      </h5>
-    </div>
+    return (
+        <div>
+            <div className="container">
+                <header>
+                    <h1>Foundations of Privacy </h1>
+                    <h4>Theory Assignment One -<button className="btn btn-lg btn-link">Click to View Code on Github</button></h4>
+                    
 
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingTwo">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Collapsible Group Item #2
-        </button>
-      </h5>
-    </div>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-      <div class="card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Collapsible Group Item #3
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-      <div class="card-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
-    </div>
-  </div>
-</div>
-  );
+                    <div className="links">
+                        <Link to="rsa" className="quick">RSA Encryption/Decryption</Link>
+                        <Link to="elgamal" className="quick">Elgamal Encryption/Decryption</Link>
+                        <Link to="diffie" className="quick">Diffie Hellman</Link>
+                        <Link to="relgamal" className="quick">Elgamal Re-encryption</Link>
+                        <Link to="universal" className="quick">Universal Elgamal Re-encryption</Link>
+                    </div>
+                </header>
+                <section class="solutions">
+                    <Switch>
+                        <Route exact path="/" component={RSA} />
+                        <Route exact path='/rsa' component={RSA} />
+                        <Route exact path='/elgamal' component={Elgamal} />
+                        <Route exact path='/diffie' component={Deffie} />
+                        <Route exact path='/relgamal' component={RElgamal} />
+                        <Route exact path='/universal' component={Universal} />
+                    </Switch>
+                </section>
+            </div>
+        </div>
+    );
 }
