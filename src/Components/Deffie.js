@@ -53,10 +53,10 @@ export default () => {
     }
     return (
         <>
-            <div className="w-75 m-auto h-100 mt-5">
+            <div className="">
                 <div className="">
-                    <form className="p-sm-5">
-                        <h1 className="text-center">Diffie Hellman Exchange Key</h1>
+                    <form className="">
+                        <h5 className="text-bold">Diffie Hellman Exchange Key</h5>
                         <div className="lead">Given a large prime p=65537, a primary root g=3</div>
 
                         <span className="lead">Choose a random number x</span>

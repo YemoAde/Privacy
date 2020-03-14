@@ -53,7 +53,7 @@ export default () => {
     }
 
     const _computeC1 = () => {
-        const { r, p, s, c1,g } = state
+        const { r, p, s, c1, pk, g } = state
         if (r && s) {
             set({
                 // _c1: bigInt(g).modPow(r + s, p)
@@ -63,8 +63,9 @@ export default () => {
     }
 
     const _computeC2 = () => {
-        const { r, p, pk, s, c2 } = state
+        const { r, p, pk, message, s, c2 } = state
         if (r && s) {
+            let tempRes = bigInt(pk).modPow(s, p)
             set({
                 // _c2: bigInt(message).multiply(tempRes)
                 _c2: c2 * bigInt(pk).pow(s)
@@ -103,7 +104,7 @@ export default () => {
             <div className=" m-auto h-100 mt-5">
                 <div className="">
                     <form className="">
-                        <h5 className="text-bold">Elgamal Re -Encryption/Decryption</h5>
+                        <h5 className="text-bold">Universal Elgamal Re-encryption</h5>
 
                         <div class="alert alert-danger" role="alert">
                             Due to Javascript Representation of Big Integers, Kindly use values of
@@ -149,62 +150,30 @@ export default () => {
                                     }} />
                             </div>
                         </div>
-                        <div className="mt-2">
-                            <span className="lead bold">Encrypt</span>
-                            <div className="row  mt-4">
-                                <div className="col-6">
-                                    <span>Choose a random number r</span>
-                                </div>
-                                <div className="col-6">
+                        <div className="mt-5">
+                            <span className="lead bold">Choose Random Numbers r1,r2, s, t</span>
+                            {/* Choose Randoms */}
+                            <div className="row  mt-2 mb-5">
+                                <div className="col-3">
+                                    <label> Choose Random Number r1</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">r =</span>
+                                            <span class="input-group-text" id="basic-addon1">r1 =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.r} name="r" onChange={change} />
+                                        <input type="text" class="form-control" value={state.r1} name="r" onChange={change} />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row  mt-2">
-                                <div className="col-6">
-                                    <span>Compute c1 = g <sup>r</sup> mod p</span>
-                                </div>
-                                <div className="col-6">
+                                <div className="col-3">
+                                    <label> Choose Random Number r2</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">C1 =</span>
+                                            <span class="input-group-text" id="basic-addon1">r2 =</span>
                                         </div>
-                                        <input type="text" class="form-control" placeholder="" value={state.c1} disabled />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="button" onClick={computeC1}>Compute</button>
-                                        </div>
+                                        <input type="text" class="form-control" value={state.r2} name="r2" onChange={change} />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row mt-2">
-                                <div className="col-6">
-                                    <span>Compute c2 = m *y<sup>r</sup> mod p</span>
-                                </div>
-                                <div className="col-6">
-                                    <div className="input-group input-group-sm">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">C2 =</span>
-                                        </div>
-                                        <input type="text" class="form-control" placeholder="" value={state.c2} disabled />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="button" onClick={computeC2}>Compute</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-2">
-                            <span className="lead bold">Re-Encrypt</span>
-                            <div className="row  mt-4">
-                                <div className="col-6">
-                                    <span>Choose a random number s</span>
-                                </div>
-                                <div className="col-6">
+                                <div className="col-3">
+                                    <label> Choose Random Number s</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">s =</span>
@@ -212,78 +181,127 @@ export default () => {
                                         <input type="text" class="form-control" value={state.s} name="s" onChange={change} />
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row  mt-2">
-                                <div className="col-6">
-                                    <span>Compute c1` = g <sup>r+s</sup> mod p</span>
-                                </div>
-                                <div className="col-6">
+                                <div className="col-3">
+                                    <label> Choose Random Number t</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">C1` =</span>
+                                            <span class="input-group-text" id="basic-addon1">t =</span>
                                         </div>
-                                        <input type="text" class="form-control" placeholder="" value={state._c1} disabled />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="button" onClick={_computeC1}>Compute</button>
-                                        </div>
+                                        <input type="text" class="form-control" value={state.t} name="t" onChange={change} />
                                     </div>
                                 </div>
                             </div>
-                            <div className="row mt-2">
-                                <div className="col-6">
-                                    <span>Compute c2` = m *y<sup>r+s</sup> mod p</span>
-                                </div>
-                                <div className="col-6">
+                            {/* End of Random 
+                            Computer Ciphers */}
+                            <h5> Compute Ciphers(Encryption)</h5>
+                            <div className="row  mt-2 mb-2">
+                                <div className="col-3">
+                                    <label>C1 = g<sup>r1</sup> mod p</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">C2` =</span>
+                                            <span class="input-group-text" id="basic-addon1">C<sub>1</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" placeholder="" value={state._c2} disabled />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="button" onClick={_computeC2}>Compute</button>
+                                        <input type="text" class="form-control" value={state.c1} />
+                                    </div>
+                                </div>
+                                <div className="col-3">
+                                    <label>C2 = m * Y<sup>r1</sup> mod p</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">C<sub>2</sub> =</span>
                                         </div>
+                                        <input type="text" class="form-control" value={state.c2} />
+                                    </div>
+                                </div>
+                                <div className="col-3">
+                                    <label>C3 = g<sup>r2</sup> mod p</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">C <sub>3</sub> =</span>
+                                        </div>
+                                        <input type="text" class="form-control" value={state.c3} />
+                                    </div>
+                                </div>
+                                <div className="col-3">
+                                    <label>C4 = Y <sup>r2</sup> mod p</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">C <sub>4</sub> =</span>
+                                        </div>
+                                        <input type="text" class="form-control" value={state.c4} />
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <button className="btn btn-primary btn-md mt-0 mb-5"> Compute Encryption Ciphertext</button>
+                            {/* End Compute Cipher */}
 
-                        <div className="mt-4">
-                            <span className="lead">Decryption C=(c1, c2)</span>
-                            <div className="row">
-                                <div className="col-6">
-                                    <span>m=c2/(c1)<sup>r</sup>mod p</span>
-                                </div>
-                                <div className="col-6">
+                            {/* End of Cipher 
+                            Computer Re-Ciphers */}
+                            <h5> Compute Re-Ciphers(Re-Encryption)</h5>
+                            <div className="row  mt-2 mb-2">
+                                <div className="col-3">
+                                    <label>C1' = = C1 * C3<sup>s</sup> = g<sup>r1 + r2 * s</sup> mod p</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">m =</span>
+                                            <span class="input-group-text" id="basic-addon1">C'<sub>1</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" disabled value={state.dmessage} />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="button" onClick={decrypt}>Decrypt</button>
+                                        <input type="text" class="form-control" value={state._c1} />
+                                    </div>
+                                </div>
+                                <div className="col-3">
+                                    <label>C2' = c2 * C4<sup>s</sup> = m * Y <sup>r1 + r2 * s</sup> mod p</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">C'<sub>2</sub> =</span>
                                         </div>
+                                        <input type="text" class="form-control" value={state._c2} />
+                                    </div>
+                                </div>
+                                <div className="col-3">
+                                    <label>C3' = C3<sup>t</sup> = g<sup>r2 * t</sup> mod p</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">C' <sub>3</sub> =</span>
+                                        </div>
+                                        <input type="text" class="form-control" value={state._c3} />
+                                    </div>
+                                </div>
+                                <div className="col-3">
+                                    <label>C4' = C4<sup>t</sup> = Y <sup>r2 * t</sup> mod p</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">C' <sub>4</sub> =</span>
+                                        </div>
+                                        <input type="text" class="form-control" value={state._c4} />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="mt-4">
-                            <span className="lead">(Re)Decryption C=(c1`, c2`)</span>
-                            <div className="row">
+                            <button className="btn btn-primary btn-md mb-5"> Compute Re-Encryption Ciphertext</button>
+                            {/* End Compute Re-Cipher */}
+
+                            <h5> Compute Re-Ciphers(Re-Encryption)</h5>
+                            <div className="row  mt-2 mb-2">
                                 <div className="col-6">
-                                    <span>m=c2/(c1)<sup>r+s</sup>mod p</span>
-                                </div>
-                                <div className="col-6">
+                                    <label>Message</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">m =</span>
+                                            <span class="input-group-text" id="basic-addon1">M</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" disabled value={state._dmessage} />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-primary" type="button" onClick={_decrypt}>Decrypt</button>
+                                        <input type="text" class="form-control" value={state._dmessage} />
+                                    </div>
+                                </div>
+                                <div className="col-6">
+                                    <label>Other Decryption (Should equal 1)</label>
+                                    <div className="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"></span>
                                         </div>
+                                        <input type="text" class="form-control" value={state._dmessage} />
                                     </div>
                                 </div>
                             </div>
+                            <button className="btn btn-primary btn-md mb-5"> Decrypt and Check if Condition for m holds</button>
+                            {/* End Compute Re-Cipher */}
                         </div>
                     </form>
                 </div>

@@ -65,10 +65,10 @@ export default () => {
 
     return (
         <>
-            <div className="w-75 m-auto h-100 mt-5">
+            <div className="m-auto h-100 mt-5">
                 <div className="">
-                    <form className="p-sm-5">
-                        <h1 className="text-center">Elgamal Encryption/Decryption</h1>
+                    <form className="">
+                        <h5 className="text-bold">Elgamal Encryption/Decryption</h5>
 
                         <div class="alert alert-danger" role="alert">
                             Due to Javascript Representation of Big Integers, Kindly use values of 

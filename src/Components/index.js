@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Rsa from '../../Algorithms/rsa';
+import Rsa from '../Algorithms/rsa';
 
 export default () => {
 
@@ -54,15 +54,10 @@ export default () => {
         set({ dmessage })
     }
 
-
-
-
-
     return (
         <>
-
-            <div className="card" className="align-center">
-                <h1>Question 1 - RSA Algorithm</h1>
+            <div className="card" className="">
+                <h5 className="text-bold">Question 1 - RSA Algorithm</h5>
                 <form>
                     <h5>Generating prime numbers p and q</h5>
                     <div class="form-row">
