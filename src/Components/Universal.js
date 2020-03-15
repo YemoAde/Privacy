@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import bigInt from 'big-integer'
+import checkmark from './correct.svg';
 
 export default () => {
 
@@ -7,15 +8,23 @@ export default () => {
         p: 65537,
         g: 3,
         message: undefined,
-        pk: undefined,
-        sk: undefined,
-        r: undefined,
+        sk: 1,
+        r1: undefined, r2: undefined,
+        s: undefined, t: undefined,
         c1: undefined,
         c2: undefined,
+        c3: undefined,
+        c4: undefined,
         _c1: undefined,
         _c2: undefined,
-        _dmessage: undefined
+        _c3: undefined,
+        _c4: undefined,
+        dmessage: undefined,
+        _dmessage: undefined,
+        valid: false
     })
+
+    const [error, setError] = useState(null)
 
     const set = object => {
         setState({ ...state, ...object })
@@ -26,6 +35,55 @@ export default () => {
         set({ [name]: value })
     }
 
+    const encrypt = () => {
+        setError(null)
+        const { r1, r2, g, p, pk, message } = state
+        if (r1 && r2 && message && pk) {
+            set({
+                c1: bigInt(g).modPow(r1, p),
+                c2: ((bigInt(pk).modPow(r1, p)).multiply(message)).mod(p),
+                c3: bigInt(g).modPow(r2, p),
+                c4: bigInt(pk).modPow(r2, p),
+                valid: false
+            })
+        } else {
+            setError("Check that Public Key, r1, r2 and message are set")
+        }
+    }
+
+    const reEncrypt = () => {
+        setError(null)
+        const { r1, r2, g, p, pk, s, t, message } = state
+        if (r1 && r2 && s && t && message) {
+            const tempA = r1 + r2 * s;
+            const tempB = r2 * t
+            set({
+                _c1: bigInt(g).modPow(tempA, p),
+                _c2: ((bigInt(pk).modPow(tempA, p)).multiply(message)).mod(p),
+                _c3: bigInt(g).modPow(tempB, p),
+                _c4: bigInt(pk).modPow(tempB, p),
+                valid: false
+            })
+        } else {
+            setError("Check that the values r1, r2, s, t and message are set")
+        }
+    }
+
+    const decrypt = () => {
+        const { c1, c2, _c3, _c4, p, sk } = state
+        setError(null)
+        try {
+            const dmessage = (bigInt(c2).divide(bigInt(c1).modPow(sk, p))).mod(p)
+            const _dmessage = (bigInt(_c4).divide(bigInt(_c3).modPow(sk, p))).mod(p)
+            const valid = _dmessage == 1 ? true : false
+            set({
+                dmessage, _dmessage, valid
+            })
+        } catch (error) {
+            setError("Encrypt and re-encrypt before decryption are set")
+        }
+    }
+
     const computePk = () => {
         const { sk, g, p } = state
         if (state.sk) {
@@ -33,71 +91,71 @@ export default () => {
         }
     }
 
-    const computeC1 = () => {
-        const { r, g, p } = state
-        if (r) {
-            set({
-                c1: bigInt(g).modPow(r, p)
-            })
-        }
-    }
+    // const computeC1 = () => {
+    //     const { r, g, p } = state
+    //     if (r) {
+    //         set({
+    //             c1: bigInt(g).modPow(r, p)
+    //         })
+    //     }
+    // }
 
-    const computeC2 = () => {
-        const { r, p, pk, message } = state
-        if (r) {
-            let tempRes = bigInt(pk).modPow(r, p)
-            set({
-                c2: bigInt(message).multiply(tempRes)
-            })
-        }
-    }
+    // const computeC2 = () => {
+    //     const { r, p, pk, message } = state
+    //     if (r) {
+    //         let tempRes = bigInt(pk).modPow(r, p)
+    //         set({
+    //             c2: bigInt(message).multiply(tempRes)
+    //         })
+    //     }
+    // }
 
-    const _computeC1 = () => {
-        const { r, p, s, c1, pk, g } = state
-        if (r && s) {
-            set({
-                // _c1: bigInt(g).modPow(r + s, p)
-                _c1: c1 * bigInt(g).pow(s)
-            })
-        }
-    }
+    // const _computeC1 = () => {
+    //     const { r, p, s, c1, pk, g } = state
+    //     if (r && s) {
+    //         set({
+    //             // _c1: bigInt(g).modPow(r + s, p)
+    //             _c1: c1 * bigInt(g).pow(s)
+    //         })
+    //     }
+    // }
 
-    const _computeC2 = () => {
-        const { r, p, pk, message, s, c2 } = state
-        if (r && s) {
-            let tempRes = bigInt(pk).modPow(s, p)
-            set({
-                // _c2: bigInt(message).multiply(tempRes)
-                _c2: c2 * bigInt(pk).pow(s)
-            })
-        }
-    }
+    // const _computeC2 = () => {
+    //     const { r, p, pk, message, s, c2 } = state
+    //     if (r && s) {
+    //         let tempRes = bigInt(pk).modPow(s, p)
+    //         set({
+    //             // _c2: bigInt(message).multiply(tempRes)
+    //             _c2: c2 * bigInt(pk).pow(s)
+    //         })
+    //     }
+    // }
 
-    const decrypt = () => {
-        const { r, c1, c2, p, sk } = state
-        console.log(state)
-        if (r && c1 && c2) {
-            let modC1 = bigInt(c1).pow(sk)
-            let tempRes = bigInt(c2).divide(modC1);
-            console.log(modC1, tempRes)
-            set({
-                dmessage: bigInt(tempRes).mod(p)
-            })
-        }
-    }
+    // const decrypt = () => {
+    //     const { r, c1, c2, p, sk } = state
+    //     console.log(state)
+    //     if (r && c1 && c2) {
+    //         let modC1 = bigInt(c1).pow(sk)
+    //         let tempRes = bigInt(c2).divide(modC1);
+    //         console.log(modC1, tempRes)
+    //         set({
+    //             dmessage: bigInt(tempRes).mod(p)
+    //         })
+    //     }
+    // }
 
-    const _decrypt = () => {
-        const { r, _c1, _c2, p, sk } = state
-        console.log(state)
-        if (r && _c1 && _c2) {
-            let modC1 = bigInt(_c1).pow(sk)
-            let tempRes = bigInt(_c2).divide(modC1);
-            console.log(modC1, tempRes)
-            set({
-                _dmessage: bigInt(tempRes).mod(p)
-            })
-        }
-    }
+    // const _decrypt = () => {
+    //     const { r, _c1, _c2, p, sk } = state
+    //     console.log(state)
+    //     if (r && _c1 && _c2) {
+    //         let modC1 = bigInt(_c1).pow(sk)
+    //         let tempRes = bigInt(_c2).divide(modC1);
+    //         console.log(modC1, tempRes)
+    //         set({
+    //             _dmessage: bigInt(tempRes).mod(p)
+    //         })
+    //     }
+    // }
 
     return (
         <>
@@ -106,7 +164,7 @@ export default () => {
                     <form className="">
                         <h5 className="text-bold">Universal Elgamal Re-encryption</h5>
 
-                        <div class="alert alert-danger" role="alert">
+                        <div className="alert alert-danger" role="alert">
                             Due to Javascript Representation of Big Integers, Kindly use values of
                             r(random number) &le; 6 and m(message) &lt; 10000. For the same reason
                             Kindly set the value of the private key to 1 for a reasonable output.
@@ -150,6 +208,7 @@ export default () => {
                                     }} />
                             </div>
                         </div>
+                        {error && <div className="alert alert-danger mt-5" role="alert">{error}</div>}
                         <div className="mt-5">
                             <span className="lead bold">Choose Random Numbers r1,r2, s, t</span>
                             {/* Choose Randoms */}
@@ -160,7 +219,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">r1 =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.r1} name="r" onChange={change} />
+                                        <input type="number" class="form-control" value={state.r1} name="r1" onChange={change} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -169,7 +228,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">r2 =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.r2} name="r2" onChange={change} />
+                                        <input type="number" class="form-control" value={state.r2} name="r2" onChange={change} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -178,7 +237,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">s =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.s} name="s" onChange={change} />
+                                        <input type="number" class="form-control" value={state.s} name="s" onChange={change} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -187,7 +246,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">t =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.t} name="t" onChange={change} />
+                                        <input type="number" class="form-control" value={state.t} name="t" onChange={change} />
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +260,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C<sub>1</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.c1} />
+                                        <input type="number" class="form-control" value={state.c1} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -210,7 +269,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C<sub>2</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.c2} />
+                                        <input type="number" class="form-control" value={state.c2} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -219,7 +278,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C <sub>3</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.c3} />
+                                        <input type="number" class="form-control" value={state.c3} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -228,11 +287,11 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C <sub>4</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state.c4} />
+                                        <input type="number" class="form-control" value={state.c4} />
                                     </div>
                                 </div>
                             </div>
-                            <button className="btn btn-primary btn-md mt-0 mb-5"> Compute Encryption Ciphertext</button>
+                            <button className="btn btn-primary btn-md mt-0 mb-5" type="button" onClick={encrypt}> Compute Encryption Ciphertext</button>
                             {/* End Compute Cipher */}
 
                             {/* End of Cipher 
@@ -245,7 +304,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C'<sub>1</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state._c1} />
+                                        <input type="number" class="form-control" value={state._c1} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -254,7 +313,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C'<sub>2</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state._c2} />
+                                        <input type="number" class="form-control" value={state._c2} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -263,7 +322,7 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C' <sub>3</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state._c3} />
+                                        <input type="number" class="form-control" value={state._c3} />
                                     </div>
                                 </div>
                                 <div className="col-3">
@@ -272,11 +331,11 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">C' <sub>4</sub> =</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state._c4} />
+                                        <input type="number" class="form-control" value={state._c4} />
                                     </div>
                                 </div>
                             </div>
-                            <button className="btn btn-primary btn-md mb-5"> Compute Re-Encryption Ciphertext</button>
+                            <button className="btn btn-primary btn-md mb-5" type="button" onClick={reEncrypt}> Compute Re-Encryption Ciphertext</button>
                             {/* End Compute Re-Cipher */}
 
                             <h5> Compute Re-Ciphers(Re-Encryption)</h5>
@@ -287,20 +346,23 @@ export default () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">M</span>
                                         </div>
-                                        <input type="text" class="form-control" value={state._dmessage} />
+                                        <input type="number" class="form-control" value={state.dmessage} />
                                     </div>
                                 </div>
                                 <div className="col-6">
                                     <label>Other Decryption (Should equal 1)</label>
                                     <div className="input-group input-group-sm">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1"></span>
+                                            <span class="input-group-text" id="basic-addon1">
+                                                {state.valid && <img src={checkmark} width="20%" />}
+                                            </span>
                                         </div>
-                                        <input type="text" class="form-control" value={state._dmessage} />
+                                        <input type="number" class="form-control" value={state._dmessage} />
                                     </div>
                                 </div>
                             </div>
-                            <button className="btn btn-primary btn-md mb-5"> Decrypt and Check if Condition for m holds</button>
+                            <button className="btn btn-primary btn-md mb-5" type="button" onClick={decrypt}> Decrypt and Check if Condition for m holds</button>
+                            
                             {/* End Compute Re-Cipher */}
                         </div>
                     </form>

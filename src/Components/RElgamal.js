@@ -25,6 +25,7 @@ export default () => {
         const { name, value } = event.target
         set({ [name]: value })
     }
+    
 
     const computePk = () => {
         const { sk, g, p } = state
