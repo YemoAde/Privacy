@@ -11,8 +11,8 @@ export default () => {
         <div>
             <div className="container">
                 <header>
-                    <h1>Foundations of Privacy </h1>
-                    <h4>Programming Assignment One -<a className="btn btn-lg btn-link" href="https://github.com/YemoAde/Privacy">Click to View Code on Github</a></h4>
+                    <h1>Privacy </h1>
+                    <h4>Crypto-Algorithms<a className="btn btn-lg btn-link" href="https://github.com/YemoAde/Privacy">Click to View Code on Github</a></h4>
                     
 
                     <div className="links">
