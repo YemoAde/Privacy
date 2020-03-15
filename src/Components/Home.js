@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Route, Switch, Link } from 'react-router-dom';
 import RSA from '.';
 import Elgamal from './Elgamal';
@@ -12,7 +12,7 @@ export default () => {
             <div className="container">
                 <header>
                     <h1>Foundations of Privacy </h1>
-                    <h4>Theory Assignment One -<button className="btn btn-lg btn-link">Click to View Code on Github</button></h4>
+                    <h4>Programming Assignment One -<a className="btn btn-lg btn-link" href="https://github.com/YemoAde/Privacy">Click to View Code on Github</a></h4>
                     
 
                     <div className="links">
